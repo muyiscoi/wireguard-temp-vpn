@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+  connection: local
+
+  tasks:
+  - name: create droplet
+    include_role:
+      name: do_vpn
+      tasks_from: create
+
+- hosts: main
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: Setup VPN
+    include_role:
+      name: do_vpn
+      tasks_from: setup

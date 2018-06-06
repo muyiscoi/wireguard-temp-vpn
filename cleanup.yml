@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+  connection: local
+
+  tasks:
+  - name: Cleanup Droplet
+    include_role:
+      name: do_vpn
+      tasks_from: cleanup

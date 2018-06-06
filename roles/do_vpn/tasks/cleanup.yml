@@ -1,0 +1,9 @@
+---
+- name: Manage droplet
+  digital_ocean:
+    state: absent
+    command: droplet
+    api_token: "{{ api_token }}"
+    name: temp-vpn
+    unique_name: yes
+  register: do

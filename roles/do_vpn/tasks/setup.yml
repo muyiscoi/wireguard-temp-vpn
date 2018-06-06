@@ -1,0 +1,25 @@
+---
+- name: Wait for SSH daemon to be running
+  local_action: "wait_for port=22 host={{ inventory_hostname }}"
+
+- name: Install python
+  raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- name: Clone vpn repo
+  git:
+    repo: "https://github.com/muyiscoi/openvpn_autoconfig.git"
+    dest: "/root/vpn"
+
+- name: Make script executable
+  file:
+    path: /root/vpn/bin/openvpn.sh
+    mode: 0755
+
+- name: Setup VPN
+  shell: /root/vpn/bin/openvpn.sh
+
+- name: Copy out client config
+  fetch:
+    src: /etc/openvpn/client.ovpn
+    dest: client.ovpn
+    flat: yes

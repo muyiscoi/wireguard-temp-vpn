@@ -1,0 +1,9 @@
+---
+- include_tasks: create.yml
+  when: task is not defined or task is defined and task == "create"
+
+- include_tasks: setup.yml
+  when: task is not defined or task is defined and task == "create"
+  #change these conditions to tags
+- include_tasks: cleanup.yml
+  when: task is defined and task == "cleanup"
