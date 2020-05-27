@@ -1,2 +1,2 @@
-# do-temp-vpn
-Spin up and tear down a VPN server on DO
+# wireguard-temp-vpn
+Create a temporary droplet configured as a wireguard VPN server
