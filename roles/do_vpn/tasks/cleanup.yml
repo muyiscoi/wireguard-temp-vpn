@@ -1,9 +1,10 @@
 ---
+- name: Disable wireguard VPN
+  command: wg-quick down "~/.wireguard/wg0.conf"
+
 - name: Manage droplet
-  digital_ocean:
+  digital_ocean_droplet:
     state: absent
-    command: droplet
-    api_token: "{{ api_token }}"
-    name: temp-vpn
+    oauth_token: "{{ api_token }}"
+    name: "wg-vpn-{{ region }}"
     unique_name: yes
-  register: do

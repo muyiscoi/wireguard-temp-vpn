@@ -1,25 +1,80 @@
 ---
 - name: Wait for SSH daemon to be running
-  local_action: "wait_for port=22 host={{ inventory_hostname }}"
+  local_action: wait_for
+  args:
+    port: 22
+    host: "{{ inventory_hostname }}"
 
-- name: Install python
-  raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+# - name: Wait for initial setup tasks to complete
+#   command: 
 
-- name: Clone vpn repo
-  git:
-    repo: "https://github.com/muyiscoi/openvpn_autoconfig.git"
-    dest: "/root/vpn"
-
-- name: Make script executable
+- name: create file
   file:
-    path: /root/vpn/bin/openvpn.sh
-    mode: 0755
+    path: test
+    state: touch
 
-- name: Setup VPN
-  shell: /root/vpn/bin/openvpn.sh
+- name: Update apt cache
+  apt:
+    update_cache: yes
 
-- name: Copy out client config
-  fetch:
-    src: /etc/openvpn/client.ovpn
-    dest: client.ovpn
-    flat: yes
+- name: Install wireguard
+  apt:
+    name: wireguard
+    state: present
+
+- name: Enable ip forwarding
+  sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+    reload: yes
+  with_items:
+    - net.ipv4.ip_forward
+    - net.ipv6.conf.all.forwarding
+
+- name: Ensure wireguard server config dir exists
+  file:
+    name: "/root/.wireguard"
+    state: directory
+
+- name: Ensure wireguard client config dir exists
+  file:
+    name: "~/.wireguard"
+    state: directory
+  delegate_to: 127.0.0.1
+
+- name: Generate server private key
+  command: wg genkey
+  register: server_private_key
+
+- name: Generate server public key
+  shell: "echo {{ server_private_key.stdout }} | wg pubkey"
+  register: server_public_key
+
+- name: Generate client private key
+  command: wg genkey
+  delegate_to: 127.0.0.1
+  register: client_private_key
+
+- name: Generate client public key
+  shell: "echo {{ client_private_key.stdout }} | wg pubkey"
+  delegate_to: 127.0.0.1
+  register: client_public_key
+
+- name: Render wg server config
+  template:
+    src: wg0_server.conf.j2
+    dest: "/root/.wireguard/wg0.conf"
+
+- name: Render wg client config
+  template:
+    src: wg0_client.conf.j2
+    dest: "~/.wireguard/wg0.conf"
+  delegate_to: 127.0.0.1
+
+- name: Start wireguard server
+  command: wg-quick up "/root/.wireguard/wg0.conf"
+
+- name: Start wireguard client
+  command: wg-quick up "~/.wireguard/wg0.conf"
+  delegate_to: 127.0.0.1

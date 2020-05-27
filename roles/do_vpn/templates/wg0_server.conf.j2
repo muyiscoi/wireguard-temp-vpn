@@ -1,0 +1,10 @@
+[Interface]
+Address = 192.168.2.1/24
+ListenPort = 35082
+PrivateKey = {{ server_private_key.stdout }}
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE; ip6tables -A FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE # Add forwarding when VPN is started
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE; ip6tables -D FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE # Remove forwarding when VPN is shutdown
+
+[Peer]
+PublicKey = {{ client_public_key.stdout }}
+AllowedIPs = 192.168.2.2/32

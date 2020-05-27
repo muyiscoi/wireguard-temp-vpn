@@ -1,4 +1,4 @@
 ---
-api_token: 7d87890190a89832a499342408781ecd0d248ec330517754a05977902497e7de
-public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCgWkYYdNLtJ4PQm83PdrQMc3wEfdgrZ8N/mJak5ajIMCnKdvNsaKwK7gLuz5UhJ/r+WdHqwqkapCCJuwNtOc6+Ixbcy/WWLKf6oY033xkGxtY0KPEuliplfMYlelp+sQBE9YZcdXDrQbNCFTY0sb/KwZMv5f85aQ9BB/9Q36YirwrlWlp7DAVYaeFGl8VXygQynobgsEgNnsRoDuiZ/HHtbtH6OcDi3UDjBWvA1pQlK0ok7X1SctmKceC0zSw5R0ckwOTpX3ImAHCS6vjPe9NV8d9O+aJ43XURgvwwi/q1nBgGdaeqryMos1oA2xC8Pjgpi/EGwdbOr2P3ET08zuF/ muyiwaiyowu@Muyiwas-iMac.local
-region: nyc1
+api_token: do-oauth-token-goes-here
+public_key: ssh-key-goes-here
+region: lon1
