@@ -1,17 +1,17 @@
 ---
 - name: Insert ssh key
-  digital_ocean:
-    command: ssh
+  digital_ocean_sshkey:
     name: laptop
     ssh_pub_key: "{{ public_key }}"
-    api_token: "{{ api_token }}"
+    oauth_token: "{{ api_token }}"
+    state: present
   register: ssh_key
 
 - name: Manage droplet
   digital_ocean_droplet:
     state: present
     name: "wg-vpn-{{ region }}"
-    ssh_keys: "{{ ssh_key.ssh_key.id }}"
+    ssh_keys: "{{ ssh_key.data.ssh_key.id }}"
     oauth_token: "{{ api_token }}"
     size: 1gb
     region: "{{ region }}"
